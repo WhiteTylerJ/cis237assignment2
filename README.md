@@ -1,6 +1,8 @@
-# Assignment 1 - Review of C# Basic Concepts and Introduction to Git
+﻿# Assignment 1 - Review of C# Basic Concepts and Introduction to Git
 
 ## Author
+
+Tyler White
 
 ## Description
 
