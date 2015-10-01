@@ -20,6 +20,12 @@ namespace cis237assignment2
         char[,] maze;
         int rowStart;
         int colStart;
+        int rowExit;
+        int colExit;
+        int numOfRows;
+        int numOfCol;
+        bool sovled;
+        int[,] mazeB;
 
         /// <summary>
         /// Default Constructor to setup a new maze solver.
@@ -49,11 +55,13 @@ namespace cis237assignment2
             int rowExit = 0;
             int colExit = 0;
             //find size of maze
-            int numOfRows = maze.GetLength(0) - 1;
-            int numOfCol = maze.GetLength(1) - 1;
+            this.numOfRows = maze.GetLength(0) - 1;
+            this.numOfCol = maze.GetLength(1) - 1;
+            this.sovled = false;
+            this.mazeB = new int[numOfRows+1, numOfCol+1];
 
-            //look in first and last rows for exit
-            for (int i = 0; i < numOfCol; i++)
+                //look in first and last rows for exit
+                for (int i = 0; i < numOfCol; i++)
             {
                 //look in first row for '.'
                 if (maze[0, i] == '.')
@@ -83,10 +91,19 @@ namespace cis237assignment2
                     rowExit = i;
                     colExit = numOfCol;
                 }
-            } 
-         
+            }
+
+            this.rowExit = rowExit;
+            this.colExit = colExit;
             Console.WriteLine("The maze ends at: (" + rowExit + "," + colExit + ")");
-            Console.Read();
+            Console.ReadKey();
+
+            mazeTraversal(rowStart, colStart);
+
+            printArray(mazeB);
+            printMaze(maze);
+            Console.ReadKey();
+            
 
         }
 
@@ -96,9 +113,81 @@ namespace cis237assignment2
         /// Feel free to change the return type if you like, or pass in parameters that you might need.
         /// This is only a very small starting point.
         /// </summary>
-        private void mazeTraversal()
+        ///
+
+        private void mazeTraversal(int currentRow, int currentCol)
         {
-            //Implement maze traversal recursive call
+            //current spot of maze
+            int row = currentRow;
+            int col = currentCol;
+            //exit conditions
+            //if maze is solved
+            if (sovled)
+                return;
+            //if cell is out of bounds
+            if (row <= -1 || col <= -1 || row >= numOfRows + 1 || col >= numOfCol + 1)
+                return;
+            //if cell is wall
+            if (maze[row, col] == '#')
+                return;
+            //if cell has been visited 4 times (theres no where else to go from that cell)
+            if (mazeB[row, col] == 4)
+                return;
+                         
+            //if cell is the exit
+            if (row == rowExit && col == colExit)
+            {
+                sovled = true;
+                maze[row, col] = 'X';
+                return;
+            }
+            //if cell gets moved to, add 1 to the "movement array"
+            if (mazeB[row, col] < 4)
+            {
+                mazeB[row, col]++;
+                maze[row, col] = 'X';
+                //printArray(mazeB);
+            }
+
+            //start recursion
+            //move up
+            mazeTraversal(row, col - 1);
+            //move down
+            mazeTraversal(row, col + 1);
+            //move left
+            mazeTraversal(row - 1, col);
+            //move right
+            mazeTraversal(row + 1, col);
+
+
+        }
+
+        //method to print the maze
+        private void printMaze(char[,] maze)
+        {
+            for(int r = 0; r < numOfRows+1; r++)
+            {
+                for (int c = 0; c < numOfCol+1; c++)
+                {
+                    Console.Write(maze[r, c] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
+        }
+
+        //temp method to print int array
+        private void printArray(int[,] array)
+        {
+            for (int r = 0; r < numOfRows + 1; r++)
+            {
+                for (int c = 0; c < numOfCol + 1; c++)
+                {
+                    Console.Write(array[r, c] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine();
         }
     }
 }
