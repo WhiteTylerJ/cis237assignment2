@@ -24,7 +24,6 @@ namespace cis237assignment2
         int colExit;
         int numOfRows;
         int numOfCol;
-        bool sovled;
         int[,] mazeB;
 
         /// <summary>
@@ -57,7 +56,6 @@ namespace cis237assignment2
             //find size of maze
             this.numOfRows = maze.GetLength(0) - 1;
             this.numOfCol = maze.GetLength(1) - 1;
-            this.sovled = false;
             this.mazeB = new int[numOfRows+1, numOfCol+1];
 
                 //look in first and last rows for exit
@@ -95,14 +93,10 @@ namespace cis237assignment2
 
             this.rowExit = rowExit;
             this.colExit = colExit;
-            Console.WriteLine("The maze ends at: (" + rowExit + "," + colExit + ")");
+            Console.WriteLine("This maze ends at: (" + rowExit + "," + colExit + ") Press any key to continue...");
             Console.ReadKey();
 
             mazeTraversal(rowStart, colStart);
-
-            printArray(mazeB);
-            printMaze(maze);
-            Console.ReadKey();
             
 
         }
@@ -115,65 +109,64 @@ namespace cis237assignment2
         /// </summary>
         ///
 
-        private void mazeTraversal(int currentRow, int currentCol)
+        private Boolean mazeTraversal(int currentRow, int currentCol)
         {
             //current spot of maze
             int row = currentRow;
             int col = currentCol;
             //exit conditions
             //if maze is solved
-            if (sovled)
-                return;
-            //if cell is out of bounds
-            if (row <= -1 || col <= -1 || row >= numOfRows + 1 || col >= numOfCol + 1)
-                return;
-            //if cell is wall
-            if (maze[row, col] == '#')
-                return;
-            //if cell has been visited 4 times (theres no where else to go from that cell)
-            if (mazeB[row, col] == 4)
-                return;
-                         
-            //if cell is the exit
             if (row == rowExit && col == colExit)
             {
-                sovled = true;
                 maze[row, col] = 'X';
-                return;
+                return true;
             }
-            //if cell gets moved to, add 1 to the "movement array"
-            if (mazeB[row, col] < 4)
-            {
-                mazeB[row, col]++;
-                maze[row, col] = 'X';
-                //printArray(mazeB);
-            }
+            //if cell is out of bounds
+            if (row <= -1 || col <= -1 || row >= numOfRows + 1 || col >= numOfCol + 1)
+                return false;
+            //if cell is wall
+            if (maze[row, col] == '#')
+                return false;
+            //if cell has been visited 4 times (theres no where else to go from that cell)
+            if (mazeB[row, col] == 4)
+                return false;
+                         
+            //if method made it this far, the cell has been visited
+            mazeB[row, col]++;
+            maze[row, col] = 'X';
 
             //start recursion
             //move up
-            mazeTraversal(row, col - 1);
+            if (mazeTraversal(row, col - 1) == true)
+                return true;
             //move down
-            mazeTraversal(row, col + 1);
+            if (mazeTraversal(row, col + 1) == true)
+                return true;
             //move left
-            mazeTraversal(row - 1, col);
+            if (mazeTraversal(row - 1, col) == true)
+                return true;
             //move right
-            mazeTraversal(row + 1, col);
+            if (mazeTraversal(row + 1, col) == true)
+                return true;
 
-
+            //if method made it this far the cell is not part of the solution path
+            maze[row, col] = '0';
+            return false;
         }
 
         //method to print the maze
-        private void printMaze(char[,] maze)
+        public void printMaze(char[,] maze)
         {
-            for(int r = 0; r < numOfRows+1; r++)
+            for(int r = 0; r < maze.GetLength(0); r++)
             {
-                for (int c = 0; c < numOfCol+1; c++)
+                for (int c = 0; c < maze.GetLength(1); c++)
                 {
                     Console.Write(maze[r, c] + " ");
                 }
                 Console.WriteLine();
             }
-            Console.WriteLine();
+            Console.WriteLine("Here is that maze solved. Press any key to continue...");
+            Console.ReadKey();
         }
 
         //temp method to print int array

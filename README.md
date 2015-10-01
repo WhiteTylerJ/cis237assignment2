@@ -29,5 +29,6 @@ Don't forget that you must have a base case for your recursive method or you wil
 ## Outside Resources Used
 
 ## Known Problems, Issues, And/Or Errors in the Program
+The "backtracing" part doesnt work quite right. It will find the path to the exit but some deadends are still marked as part of the solutions path
 
 
